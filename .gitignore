@@ -1,0 +1,61 @@
+# Byte-compiled / optimized files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Django-specific
+*.log
+*.pot
+*.pyc
+*.mo
+db.sqlite3
+media/
+
+# If you keep settings in dotenv
+.env
+*.env
+
+# Migrations (optional: keep if in team/collab projects)
+*/migrations/*
+!*/migrations/__init__.py
+
+# Virtual environment folders
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# IDEs and editors
+.vscode/
+.idea/
+*.iml
+
+# MacOS
+.DS_Store
+
+# Test and coverage outputs
+.coverage
+htmlcov/
+.tox/
+.pytest_cache/
+.mypy_cache/
+.pytype/
+.hypothesis/
+
+# Django static/media (optional, if generated separately)
+staticfiles/
+static/
+media/
+
+# Build/dist
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Node.js (if using any frontend framework)
+node_modules/
+
+# Secrets or config
+secrets/
