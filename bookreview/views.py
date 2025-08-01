@@ -1,9 +1,12 @@
-from rest_framework import generics,permissions
+from rest_framework import generics,permissions,status
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter,OrderingFilter
 from .models import Book , Review
-from .serializers import BookSerializer, ReviewSerializer
+from .serializers import BookSerializer, ReviewSerializer, UserRegisterSerializer
 from .permissions import IsRevieworReadOnly
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.response import Response
+from rest_framework.permissions import AllowAny
 
 #Book Views
 class BookListCreateView(generics.ListCreateAPIView):
@@ -16,10 +19,20 @@ class BookListCreateView(generics.ListCreateAPIView):
     search_fields=['title','author']
     ordering_fields=['published_year','title']
 
+    def get_permissions(self):
+        if self.request.method=='POST':
+            return [permissions.IsAdminUser()]
+        return [permissions.AllowAny()]
+
 class BookDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset=Book.objects.all()
     serializer_class=BookSerializer
     permission_classes=[permissions.IsAdminUser|permissions.IsAuthenticatedOrReadOnly]
+
+    def get_permissions(self):
+        if self.request.method in ['PUT','PATCH','DELETE']:
+            return [permissions.IsAdminUser()]
+        return [permissions.AllowAny()]
 
 #Review Views
 class ReviewListCreateView(generics.ListCreateAPIView):
@@ -45,3 +58,20 @@ class ReviewDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset=Review.objects.all()
     serializer_class=ReviewSerializer
     permission_classes=[IsRevieworReadOnly]
+
+class UserRegisterView(generics.CreateAPIView):
+    serializer_class=UserRegisterSerializer
+    permission_classes=[AllowAny]
+
+    def create(self,request,*args,**kwargs):
+        serializer=self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user=serializer.save()
+
+        refresh=RefreshToken.for_user(user)
+
+        return Response({
+            "user":{"username":user.username,"id":user.id},
+            "refresh":str(refresh),
+            "access":str(refresh.access_token)
+        },status=status.HTTP_201_CREATED)
