@@ -128,5 +128,5 @@ MIT License
 
 ## Contact
 
-For questions or collaboration, please contact [kuldeep.mca@example.com]
+For questions or collaboration, please contact [kuldeep.mca2024@gmail.com]
 
